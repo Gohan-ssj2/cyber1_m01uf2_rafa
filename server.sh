@@ -63,15 +63,23 @@ then
 fi
 echo "OK_FILE_DATA" | nc $IP_CLIENT $PORT
 
-echo "15.LISTEN FILE_MD5"
+echo "15.LISTEN DATA_FILE_MD5"
 
 DATA=`nc -l $PORT`
+
+PREFIX=`echo $DATA | cut -d " " -f 1`
+
+if [ $PREFIX != "FILE_DATA_MD5" ]
+then
+	echo "KO_FILE_DATA_MD5"
+	echo "ERROR 4: Prefijo incorrecto"
+fi
 
 MD5=`cat ./server/lechuga1.ogg | md5sum | cut -d " " -f 1`
 
 if [ `echo $DATA | cut -d " " -f 2` != $MD5 ]
 then
-	echo "ERROR 4: Los datos han sido corrompidos/diferentes a los enviados"
+	echo "ERROR 5: Los datos han sido corrompidos/diferentes a los enviados"
 	echo "KO_FILE_MD5"
 fi
 echo "OK_FILE_DATA_MD5"
